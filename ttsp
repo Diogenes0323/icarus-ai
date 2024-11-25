@@ -1,0 +1,34 @@
+async function fetchAIResponse(userQuestion) {
+  try {
+    const response = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userQuestion }),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      const aiResponse = data; // Assuming the response is in the 'data' object
+
+      // Speak the response
+      speak(aiResponse);
+
+      return aiResponse; // Return response from the backend
+    } else {
+      return "I'm having trouble connecting to my knowledge base right now. Please try again later.";
+    }
+  } catch (error) {
+    console.error("Error fetching AI response:", error);
+    return "Something went wrong. Please try again later.";
+  }
+}
+
+// Function to use Text-to-Speech
+function speak(text) {
+  const speechSynthesis = window.speechSynthesis;
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.rate = 1; // Set speed of speech (1 is normal)
+  utterance.pitch = 1; // Set pitch of speech (1 is normal)
+  utterance.volume = 1; // Set volume (1 is max)
+  speechSynthesis.speak(utterance);
+}
